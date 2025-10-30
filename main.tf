@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 resource "aws_s3_bucket" "bucket" {
-  bucket_prefix = "${var.prefix}-${var.name}"
+  bucket_prefix = "${var.prefix}-${var.name}-"
 
   force_destroy = true
 }
