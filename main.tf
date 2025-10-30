@@ -16,6 +16,7 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
   restrict_public_buckets = false
 }
 
+
 resource "aws_s3_bucket_ownership_controls" "bucket" {
   bucket = aws_s3_bucket.bucket.id
   rule {
@@ -45,8 +46,19 @@ resource "aws_s3_bucket_acl" "bucket" {
   acl = "public-read"
 }
 
+resource "aws_s3_account_public_access_block" "this" {
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
 resource "aws_s3_bucket_policy" "policy" {
   bucket = aws_s3_bucket.bucket.id
+  depends_on = [
+    aws_s3_account_public_access_block.this, # ensure account BPaB is off first
+    aws_s3_bucket_public_access_block.bucket # and bucket BPaB is off
+  ]
   policy = <<EOF
 {
     "Version": "2012-10-17",
